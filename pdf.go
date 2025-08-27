@@ -2,6 +2,7 @@ package sbpfx
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"strconv"
 	"strings"
@@ -10,7 +11,7 @@ import (
 	"github.com/ledongthuc/pdf"
 )
 
-// parsePDFContent extracts text from PDF content and parses exchange rates
+// parsePDFContent extracts text from PDF content and parses exchange rates.
 func parsePDFContent(content []byte, date time.Time, url string) (map[Currency]*ExchangeRate, error) {
 	reader, err := pdf.NewReader(bytes.NewReader(content), int64(len(content)))
 	if err != nil {
@@ -34,7 +35,7 @@ func parsePDFContent(content []byte, date time.Time, url string) (map[Currency]*
 	return parseExchangeRateText(fullText.String(), date, url)
 }
 
-// parseExchangeRateText parses extracted text to find exchange rates
+// parseExchangeRateText parses extracted text to find exchange rates.
 func parseExchangeRateText(text string, date time.Time, url string) (map[Currency]*ExchangeRate, error) {
 	rates := make(map[Currency]*ExchangeRate)
 
@@ -58,7 +59,7 @@ func parseExchangeRateText(text string, date time.Time, url string) (map[Currenc
 	}
 
 	if currencyLineIndex == -1 || readyLineIndex == -1 {
-		return nil, fmt.Errorf("could not find CURRENCY or READY headers")
+		return nil, errors.New("could not find CURRENCY or READY headers")
 	}
 
 	// Parse currencies and rates
@@ -98,29 +99,39 @@ func parseExchangeRateText(text string, date time.Time, url string) (map[Currenc
 	}
 
 	// Match currencies with their ready rates
-	minLen := min(len(currencies), len(readyRates))
-	for i := 0; i < minLen; i++ {
+	minLen := minValue(len(currencies), len(readyRates))
+	for i := range minLen {
 		// Validate that it's a valid rate string before storing
 		if _, err := strconv.ParseFloat(readyRates[i], 64); err == nil {
 			currency := Currency(currencies[i])
 			rates[currency] = &ExchangeRate{
-				Currency: currency,
-				Ready:    readyRates[i], // Store as string
-				Date:     date,
-				URL:      url,
+				Currency:   currency,
+				Ready:      readyRates[i], // Store as string
+				Date:       date,
+				URL:        url,
+				OneWeek:    "",
+				TwoWeek:    "",
+				OneMonth:   "",
+				TwoMonth:   "",
+				ThreeMonth: "",
+				FourMonth:  "",
+				FiveMonth:  "",
+				SixMonth:   "",
+				NineMonth:  "",
+				OneYear:    "",
 			}
 		}
 	}
 
 	if len(rates) == 0 {
-		return nil, fmt.Errorf("no exchange rates found in PDF")
+		return nil, errors.New("no exchange rates found in PDF")
 	}
 
 	return rates, nil
 }
 
-// min returns the minimum of two integers
-func min(a, b int) int {
+// minValue returns the minimum of two integers.
+func minValue(a, b int) int {
 	if a < b {
 		return a
 	}

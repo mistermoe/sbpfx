@@ -2,10 +2,8 @@ package sbpfx
 
 import "time"
 
-// Currency represents a 3-letter ISO currency code
 type Currency string
 
-// Common currency constants
 const (
 	USD Currency = "USD"
 	EUR Currency = "EUR"
@@ -43,19 +41,17 @@ const (
 	GNH Currency = "GNH"
 )
 
-// String returns the string representation of the currency
 func (c Currency) String() string {
 	return string(c)
 }
 
-// IsValid checks if the currency code is valid
 func (c Currency) IsValid() bool {
 	validCurrencies := map[Currency]bool{
 		USD: true, EUR: true, JPY: true, GBP: true, CHF: true,
 		AUD: true, CAD: true, SEK: true, NOK: true, DKK: true,
 		SAR: true, AED: true, KWD: true, BHD: true, QAR: true,
 		OMR: true, CNY: true, HKD: true, SGD: true, THB: true,
-		MYR: true, INR: true, NZD: true, ZAR: true,
+		MYR: true, INR: true, KRW: true, NZD: true, ZAR: true,
 		BDT: true, BRL: true, ARS: true, LKR: true, TRY: true,
 		IDR: true, MXN: true, RUB: true, GNH: true,
 	}
@@ -63,7 +59,7 @@ func (c Currency) IsValid() bool {
 }
 
 // ExchangeRate represents exchange rates for different delivery periods
-// These are forward rates used for currency hedging and speculation
+// These are forward rates used for currency hedging and speculation.
 type ExchangeRate struct {
 	Currency   Currency  `json:"currency"`
 	Date       time.Time `json:"date"`
@@ -81,7 +77,7 @@ type ExchangeRate struct {
 	OneYear    string    `json:"one_year,omitempty"`    // 1-year forward rate
 }
 
-// GetSpotRate returns the spot rate (Ready rate) as a string
+// GetSpotRate returns the spot rate (Ready rate) as a string.
 func (e *ExchangeRate) GetSpotRate() string {
 	return e.Ready
 }

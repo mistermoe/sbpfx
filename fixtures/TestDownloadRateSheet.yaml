@@ -4789,13 +4789,13 @@ interactions:
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 975eae64791e0034-LHR
+                - 975f42e589d9c0c0-DFW
             Content-Length:
                 - "249610"
             Content-Type:
                 - application/pdf
             Date:
-                - Wed, 27 Aug 2025 21:32:24 GMT
+                - Wed, 27 Aug 2025 23:13:46 GMT
             Etag:
                 - '"076aeb93b17dc1:0"'
             Last-Modified:
@@ -4803,12 +4803,12 @@ interactions:
             Nel:
                 - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
             Report-To:
-                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=Yxo6VxBieLuEfuhZakBhBDqTHrzIdmphlFbkp0a4HZBSGGU5BQeNP30mLUY2Dsoomvo2C0bmIYsPaoNtgL4JegCiWkfU%2FzU45dM3y60%3D"}]}'
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=n2Yhbt4WZeRD58eKi9hTA6%2B1os4s%2BafVeVdcyPvfmS6asJAzLNEJllvHjVjpfPlK%2BOXQUSk80SEKDbrQ5xKM1A9tqkocjSNX4CmJ"}]}'
             Server:
                 - cloudflare
             Server-Timing:
                 - cfCacheStatus;desc="DYNAMIC"
-                - cfEdge;dur=10,cfOrigin;dur=998
+                - cfEdge;dur=6,cfOrigin;dur=280
             X-Content-Type-Options:
                 - nosniff
             X-Frame-Options:
@@ -4817,4 +4817,4 @@ interactions:
                 - 1; mode=block
         status: 200 OK
         code: 200
-        duration: 1.453150458s
+        duration: 322.090958ms

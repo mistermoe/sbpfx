@@ -11,15 +11,15 @@ import (
 	"gopkg.in/dnaeon/go-vcr.v3/recorder"
 )
 
-// VCRMode is used to represent the supported modes.
-type VCRMode string
+// Mode is used to represent the supported modes.
+type Mode string
 
 const (
-	Replay VCRMode = "REPLAY"
-	Record VCRMode = "RECORD"
+	Replay Mode = "REPLAY"
+	Record Mode = "RECORD"
 )
 
-func (m VCRMode) ToLibMode() recorder.Mode {
+func (m Mode) ToLibMode() recorder.Mode {
 	switch m {
 	case Record:
 		return recorder.ModeRecordOnly
@@ -50,7 +50,7 @@ func getCasette(r *recorder.Recorder, path string) Cassette {
 // on addition configuration can be found [here]
 //
 // [here]: https://github.com/dnaeon/go-vcr
-type BootstrapFunc[T any] func(t *testing.T, m VCRMode, r *recorder.Recorder) T
+type BootstrapFunc[T any] func(t *testing.T, m Mode, r *recorder.Recorder) T
 
 // TestFunc is a function that contains the actual test logic. It should accept the client and the cassette as arguments.
 type TestFunc[T any] func(*testing.T, T, Cassette)
@@ -61,7 +61,7 @@ type TestFunc[T any] func(*testing.T, T, Cassette)
 // A bootstrap function can be provided to set up the client that will be used in the test. The test function
 // should contain the actual test logic. The cassette is passed to the test function so that it can be used to assert
 // on the recorded interactions.
-func Test[T any](t *testing.T, m VCRMode, bootstrap BootstrapFunc[T], test TestFunc[T]) {
+func Test[T any](t *testing.T, m Mode, bootstrap BootstrapFunc[T], test TestFunc[T]) {
 	cassettePath := "fixtures/" + t.Name()
 	rec, err := recorder.NewWithOptions(&recorder.Options{
 		CassetteName: cassettePath,
