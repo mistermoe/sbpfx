@@ -1,8 +1,5 @@
 # State Bank of Pakistan Exchange Rates
 
-[![Test](https://github.com/mistermoe/sbp-pkr-fx/actions/workflows/test.yml/badge.svg)](https://github.com/mistermoe/sbp-pkr-fx/actions/workflows/test.yml)
-[![Lint](https://github.com/mistermoe/sbp-pkr-fx/actions/workflows/lint.yml/badge.svg)](https://github.com/mistermoe/sbp-pkr-fx/actions/workflows/lint.yml)
-
 ## Overview
 
 The State Bank of Pakistan (SBP) publishes exchange rates for various currencies against the Pakistani Rupee (PKR) on a daily basis. They publish the exchange rates on the internet in PDF format at a deterministic URL for each day. This lib provides an interface to fetch and/or download the exchange rates for any given date.
