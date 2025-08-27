@@ -1,0 +1,36 @@
+{
+  "sidebar": [
+    {
+      "label": "Getting Started",
+      "link": "/"
+    },
+    {
+      "label": "Headers",
+      "link": "/headers"
+    },
+    {
+      "label": "Query Params",
+      "link": "/query-params"
+    },
+    {
+      "label": "Request Body",
+      "link": "/request-body"
+    },
+    {
+      "label": "Response Body",
+      "link": "/response-body"
+    },
+    {
+      "label": "Interceptors",
+      "link": "/interceptors"
+    },
+    {
+      "label": "Observability",
+      "link": "/observability"
+    },
+    {
+      "label": "Inspecting Requests",
+      "link": "/inspect"
+    }
+  ]
+}

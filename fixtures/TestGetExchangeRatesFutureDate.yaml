@@ -1,0 +1,55 @@
+---
+version: 2
+interactions:
+    - id: 0
+      request:
+        proto: HTTP/1.1
+        proto_major: 1
+        proto_minor: 1
+        content_length: 0
+        transfer_encoding: []
+        trailer: {}
+        host: www.sbp.org.pk
+        remote_addr: ""
+        request_uri: ""
+        body: ""
+        form: {}
+        headers: {}
+        url: https://www.sbp.org.pk/ecodata/rates/m2m/2030/Dec/25-Dec-30.pdf
+        method: GET
+      response:
+        proto: HTTP/2.0
+        proto_major: 2
+        proto_minor: 0
+        transfer_encoding: []
+        trailer: {}
+        content_length: -1
+        uncompressed: true
+        body: "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\r\n<html xmlns=\"http://www.w3.org/1999/xhtml\">\r\n<head>\r\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=iso-8859-1\"/>\r\n<title>404 - File or directory not found.</title>\r\n<style type=\"text/css\">\r\n<!--\r\nbody{margin:0;font-size:.7em;font-family:Verdana, Arial, Helvetica, sans-serif;background:#EEEEEE;}\r\nfieldset{padding:0 15px 10px 15px;} \r\nh1{font-size:2.4em;margin:0;color:#FFF;}\r\nh2{font-size:1.7em;margin:0;color:#CC0000;} \r\nh3{font-size:1.2em;margin:10px 0 0 0;color:#000000;} \r\n#header{width:96%;margin:0 0 0 0;padding:6px 2% 6px 2%;font-family:\"trebuchet MS\", Verdana, sans-serif;color:#FFF;\r\nbackground-color:#555555;}\r\n#content{margin:0 0 0 2%;position:relative;}\r\n.content-container{background:#FFF;width:96%;margin-top:8px;padding:10px;position:relative;}\r\n-->\r\n</style>\r\n</head>\r\n<body>\r\n<div id=\"header\"><h1>Server Error</h1></div>\r\n<div id=\"content\">\r\n <div class=\"content-container\"><fieldset>\r\n  <h2>404 - File or directory not found.</h2>\r\n  <h3>The resource you are looking for might have been removed, had its name changed, or is temporarily unavailable.</h3>\r\n </fieldset></div>\r\n</div>\r\n<script defer src=\"https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015\" integrity=\"sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==\" data-cf-beacon='{\"version\":\"2024.11.0\",\"token\":\"39286af55fc5490598df3346f94b2077\",\"server_timing\":{\"name\":{\"cfCacheStatus\":true,\"cfEdge\":true,\"cfExtPri\":true,\"cfL4\":true,\"cfOrigin\":true,\"cfSpeedBrain\":true},\"location_startswith\":null}}' crossorigin=\"anonymous\"></script>\n</body>\r\n</html>\r\n"
+        headers:
+            Cf-Cache-Status:
+                - DYNAMIC
+            Cf-Ray:
+                - 975eb5f33b672155-CDG
+            Content-Type:
+                - text/html
+            Date:
+                - Wed, 27 Aug 2025 21:37:32 GMT
+            Nel:
+                - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+            Report-To:
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=fMOeZStGyNaH%2FAeHJ5farkj%2BKhTKLd1OsyvtSTaLc4W7IZARgnB4f9FJzhW7J7vwAgoaJiabMsum%2Fff4VqTPLKEb%2F9usf01MRt20"}]}'
+            Server:
+                - cloudflare
+            Server-Timing:
+                - cfCacheStatus;desc="DYNAMIC"
+                - cfEdge;dur=9,cfOrigin;dur=179
+            X-Content-Type-Options:
+                - nosniff
+            X-Frame-Options:
+                - SAMEORIGIN
+            X-Xss-Protection:
+                - 1; mode=block
+        status: 404 Not Found
+        code: 404
+        duration: 658.455166ms
