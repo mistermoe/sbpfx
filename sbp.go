@@ -129,7 +129,16 @@ func (c *Client) GetExchangeRates(ctx context.Context, opts ...Option) (map[Curr
 		return nil, fmt.Errorf("PDF not found: no rate sheet available for path: %s", path)
 	}
 
-	return parsePDFContent(content, date, fullURL)
+	rates, err := parsePDFContent(content, date, fullURL)
+	if err != nil {
+		// The PDF exists but isn't a parseable rate sheet. SBP posted a few
+		// malformed/unrelated PDFs during the June 2026 migration (e.g.
+		// 2026-06-01, 03, 04, 05); surface a clear, date-tagged error rather
+		// than the raw parser message so callers can distinguish it from a bug.
+		return nil, fmt.Errorf("no valid rate sheet for %s (%s): %w", date.Format("2006-01-02"), fullURL, err)
+	}
+
+	return rates, nil
 }
 
 func (c *Client) GetExchangeRate(ctx context.Context, currency Currency, opts ...Option) (*ExchangeRate, error) {

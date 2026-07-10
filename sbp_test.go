@@ -62,6 +62,17 @@ func TestGetExchangeRatesFutureDate(t *testing.T) {
 	})
 }
 
+func TestGetExchangeRatesMalformedSheet(t *testing.T) {
+	vcr.Test(t, testMode, bootstrap, func(t *testing.T, client *sbpfx.Client, c vcr.Cassette) {
+		// During the June 2026 migration SBP posted a few PDFs that exist but
+		// are not parseable rate sheets (e.g. 2026-06-01). The client should
+		// return a clear, date-tagged error rather than the raw parser message.
+		_, err := client.GetExchangeRates(t.Context(), sbpfx.ForDate("2026-06-01"))
+		assert.Error(t, err, "malformed sheet should error")
+		assert.Contains(t, err.Error(), "no valid rate sheet", "error should be the domain error")
+	})
+}
+
 func TestForDateAndForTime(t *testing.T) {
 	vcr.Test(t, testMode, bootstrap, func(t *testing.T, client *sbpfx.Client, c vcr.Cassette) {
 		// Test ForDate with string format
