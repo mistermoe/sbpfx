@@ -15,7 +15,7 @@ interactions:
         body: ""
         form: {}
         headers: {}
-        url: https://www.sbp.org.pk/ecodata/rates/m2m/2030/Dec/25-Dec-30.pdf
+        url: https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-25-december-2030.pdf
         method: GET
       response:
         proto: HTTP/2.0

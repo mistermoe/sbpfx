@@ -15,10 +15,10 @@ The State Bank of Pakistan (SBP) publishes exchange rates for various currencies
 
 ### Example Rate Sheets
 
-* [2025-08-27](https://www.sbp.org.pk/ecodata/rates/m2m/2025/Aug/27-Aug-25.pdf)
-* [2025-08-26](https://www.sbp.org.pk/ecodata/rates/m2m/2025/Aug/26-Aug-25.pdf)
-* [2025-08-25](https://www.sbp.org.pk/ecodata/rates/m2m/2025/Aug/25-Aug-25.pdf)
-* [2025-08-24](https://www.sbp.org.pk/ecodata/rates/m2m/2025/Aug/24-Aug-25.pdf)
+* [2025-08-27](https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-27-august-2025.pdf)
+* [2025-08-26](https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-26-august-2025.pdf)
+* [2025-08-25](https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-25-august-2025.pdf)
+* [2025-08-24](https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-24-august-2025.pdf)
 
 :::note
 These Exchange Rates are issued by the State Bank of Pakistan for Authorized Dealers to revalue their books daily on Mark-to-Market basis. M2M rate of USD is compiled as weighted average of closing interbank exchange rate collected through Brokerage Houses. M2M rates of other currencies are compiled on the basis of USD/PKR rate compiled from brokerage houses' data and exchange rate of other currencies against USD quoted on Reuters Eikon Terminal.

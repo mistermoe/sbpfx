@@ -21,7 +21,7 @@ func bootstrap(_ *testing.T, mode vcr.Mode, rec *recorder.Recorder) *sbpfx.Clien
 
 func TestGetExchangeRates(t *testing.T) {
 	vcr.Test(t, testMode, bootstrap, func(t *testing.T, client *sbpfx.Client, c vcr.Cassette) {
-		rate, err := client.GetExchangeRate(t.Context(), sbpfx.USD)
+		rate, err := client.GetExchangeRate(t.Context(), sbpfx.USD, sbpfx.ForDate("2025-08-27"))
 		assert.NoError(t, err)
 		assert.NotZero(t, rate)
 
@@ -38,7 +38,7 @@ func TestDownloadRateSheet(t *testing.T) {
 		tempFile := t.TempDir() + "/test_rate_sheet.pdf"
 
 		// Download the rate sheet
-		err := client.DownloadRateSheet(t.Context(), tempFile)
+		err := client.DownloadRateSheet(t.Context(), tempFile, sbpfx.ForDate("2025-08-27"))
 		assert.NoError(t, err)
 
 		// Verify the file was created and has content

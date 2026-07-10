@@ -5,15 +5,26 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
+	"time"
 
 	"github.com/mistermoe/httpr"
 )
 
 const (
-	BaseURL      = "https://www.sbp.org.pk/ecodata/rates/m2m"
+	BaseURL      = "https://www.sbp.org.pk/assets/document"
 	HTTPStatusOK = 200
-	YearModulo   = 100 // For getting last 2 digits of year
 )
+
+// ratePath builds the URL path for the exchange rate PDF of the given date,
+// e.g. /mark-to-market-revaluation-exchange-rate-07-july-2026.pdf.
+func ratePath(date time.Time) string {
+	return fmt.Sprintf("/mark-to-market-revaluation-exchange-rate-%02d-%s-%d.pdf",
+		date.Day(),
+		strings.ToLower(date.Format("January")),
+		date.Year(),
+	)
+}
 
 type Client struct {
 	httpClient *httpr.Client
@@ -41,12 +52,7 @@ func (c *Client) GetExchangeRates(ctx context.Context, opts ...Option) (map[Curr
 	}
 
 	date := cfg.date
-	path := fmt.Sprintf("/%d/%s/%02d-%s-%02d.pdf",
-		date.Year(),
-		date.Format("Jan"),
-		date.Day(),
-		date.Format("Jan"),
-		date.Year()%YearModulo) // Last 2 digits of year
+	path := ratePath(date)
 
 	fullURL := fmt.Sprintf("%s%s", BaseURL, path)
 
@@ -94,14 +100,7 @@ func (c *Client) GetUrl(opts ...Option) string {
 
 	date := cfg.date
 
-	return fmt.Sprintf("%s/%d/%s/%02d-%s-%02d.pdf",
-		BaseURL,
-		date.Year(),
-		date.Format("Jan"),
-		date.Day(),
-		date.Format("Jan"),
-		date.Year()%YearModulo, // Last 2 digits of year
-	)
+	return fmt.Sprintf("%s%s", BaseURL, ratePath(date))
 }
 
 // DownloadRateSheet downloads the exchange rate PDF to the specified file path.
@@ -114,12 +113,7 @@ func (c *Client) DownloadRateSheet(ctx context.Context, path string, opts ...Opt
 	}
 
 	date := cfg.date
-	urlPath := fmt.Sprintf("/%d/%s/%02d-%s-%02d.pdf",
-		date.Year(),
-		date.Format("Jan"),
-		date.Day(),
-		date.Format("Jan"),
-		date.Year()%YearModulo) // Last 2 digits of year
+	urlPath := ratePath(date)
 
 	resp, err := c.httpClient.Get(ctx, urlPath)
 	if err != nil {
