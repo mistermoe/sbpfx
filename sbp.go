@@ -30,31 +30,30 @@ func looksLikePDF(content []byte) bool {
 
 // newFormatStart is the first date whose sheet uses the current filename
 // format (prefix + DD-month-YYYY, e.g. 03-july-2026). Earlier sheets use the
-// legacy prefix + DD-Mon-YY style (e.g. 27-Aug-25).
+// legacy bare DD-Mon-YY style with no prefix (e.g. 23-Jun-26).
 var newFormatStart = time.Date(2026, time.July, 3, 0, 0, 0, 0, time.UTC)
 
-// migrationOverrides holds the handful of transition-window sheets that SBP
-// uploaded with irregular names while migrating to the new host. Keyed by
-// YYYY-MM-DD. These follow neither the legacy nor the current convention, so
-// they can only be resolved by lookup.
+// migrationOverrides holds the transition-window sheets that SBP uploaded with
+// irregular names while migrating to the new host. Keyed by YYYY-MM-DD. These
+// follow neither the legacy nor the current convention, so they can only be
+// resolved by lookup.
 var migrationOverrides = map[string]string{
-	"2026-06-29": "/29-Jun-26.pdf",              // no prefix
-	"2026-06-30": "/30-Jun-26_1.pdf",            // no prefix, _1 suffix
+	"2026-06-30": "/30-Jun-26_1.pdf",            // bare date with a _1 suffix
 	"2026-07-02": ratePrefix + "-02-Jul-26.pdf", // prefix but legacy date style
 }
 
 // ratePath builds the URL path for the exchange rate PDF of the given date.
 //   - transition-window dates: looked up in migrationOverrides
-//   - before newFormatStart: legacy prefix + DD-Mon-YY (e.g. 27-Aug-25)
-//   - on/after newFormatStart: current prefix + DD-month-YYYY (e.g. 07-july-2026)
+//   - before newFormatStart: legacy bare DD-Mon-YY, e.g. /23-Jun-26.pdf
+//   - on/after newFormatStart: current prefix + DD-month-YYYY, e.g.
+//     /mark-to-market-revaluation-exchange-rate-07-july-2026.pdf
 func ratePath(date time.Time) string {
 	if override, ok := migrationOverrides[date.Format("2006-01-02")]; ok {
 		return override
 	}
 
 	if date.Before(newFormatStart) {
-		return fmt.Sprintf("%s-%02d-%s-%02d.pdf",
-			ratePrefix,
+		return fmt.Sprintf("/%02d-%s-%02d.pdf",
 			date.Day(),
 			date.Format("Jan"),
 			date.Year()%YearModulo, // Last 2 digits of year

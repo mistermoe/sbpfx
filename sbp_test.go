@@ -21,7 +21,7 @@ func bootstrap(_ *testing.T, mode vcr.Mode, rec *recorder.Recorder) *sbpfx.Clien
 
 func TestGetExchangeRates(t *testing.T) {
 	vcr.Test(t, testMode, bootstrap, func(t *testing.T, client *sbpfx.Client, c vcr.Cassette) {
-		rate, err := client.GetExchangeRate(t.Context(), sbpfx.USD, sbpfx.ForDate("2025-08-27"))
+		rate, err := client.GetExchangeRate(t.Context(), sbpfx.USD, sbpfx.ForDate("2026-06-23"))
 		assert.NoError(t, err)
 		assert.NotZero(t, rate)
 
@@ -38,7 +38,7 @@ func TestDownloadRateSheet(t *testing.T) {
 		tempFile := t.TempDir() + "/test_rate_sheet.pdf"
 
 		// Download the rate sheet
-		err := client.DownloadRateSheet(t.Context(), tempFile, sbpfx.ForDate("2025-08-27"))
+		err := client.DownloadRateSheet(t.Context(), tempFile, sbpfx.ForDate("2026-06-23"))
 		assert.NoError(t, err)
 
 		// Verify the file was created and has content
@@ -65,10 +65,10 @@ func TestGetExchangeRatesFutureDate(t *testing.T) {
 func TestForDateAndForTime(t *testing.T) {
 	vcr.Test(t, testMode, bootstrap, func(t *testing.T, client *sbpfx.Client, c vcr.Cassette) {
 		// Test ForDate with string format
-		rateFromString, err1 := client.GetExchangeRate(t.Context(), sbpfx.USD, sbpfx.ForDate("2025-08-27"))
+		rateFromString, err1 := client.GetExchangeRate(t.Context(), sbpfx.USD, sbpfx.ForDate("2026-06-23"))
 
 		// Test ForTime with time.Time
-		specificTime := time.Date(2025, 8, 27, 0, 0, 0, 0, time.UTC)
+		specificTime := time.Date(2026, 6, 23, 0, 0, 0, 0, time.UTC)
 		rateFromTime, err2 := client.GetExchangeRate(t.Context(), sbpfx.USD, sbpfx.ForTime(specificTime))
 
 		// Both should work and return the same data (assuming the date exists)
@@ -93,10 +93,10 @@ func TestGetUrlDateFormats(t *testing.T) {
 		date string
 		want string
 	}{
-		// Legacy format (well before migration): prefix + DD-Mon-YY
-		{"2025-08-27", base + "/mark-to-market-revaluation-exchange-rate-27-Aug-25.pdf"},
-		// Transition-window overrides (irregular names)
+		// Legacy format (before migration): bare DD-Mon-YY, no prefix
+		{"2026-06-23", base + "/23-Jun-26.pdf"},
 		{"2026-06-29", base + "/29-Jun-26.pdf"},
+		// Transition-window overrides (irregular names)
 		{"2026-06-30", base + "/30-Jun-26_1.pdf"},
 		{"2026-07-02", base + "/mark-to-market-revaluation-exchange-rate-02-Jul-26.pdf"},
 		// Current format (on/after 2026-07-03): prefix + DD-month-YYYY
