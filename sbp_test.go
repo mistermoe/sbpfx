@@ -21,7 +21,7 @@ func bootstrap(_ *testing.T, mode vcr.Mode, rec *recorder.Recorder) *sbpfx.Clien
 
 func TestGetExchangeRates(t *testing.T) {
 	vcr.Test(t, testMode, bootstrap, func(t *testing.T, client *sbpfx.Client, c vcr.Cassette) {
-		rate, err := client.GetExchangeRate(t.Context(), sbpfx.USD, sbpfx.ForDate("2026-06-23"))
+		rate, err := client.GetExchangeRate(t.Context(), sbpfx.USD, sbpfx.ForDate("2025-08-27"))
 		assert.NoError(t, err)
 		assert.NotZero(t, rate)
 
@@ -38,7 +38,7 @@ func TestDownloadRateSheet(t *testing.T) {
 		tempFile := t.TempDir() + "/test_rate_sheet.pdf"
 
 		// Download the rate sheet
-		err := client.DownloadRateSheet(t.Context(), tempFile, sbpfx.ForDate("2026-06-23"))
+		err := client.DownloadRateSheet(t.Context(), tempFile, sbpfx.ForDate("2025-08-27"))
 		assert.NoError(t, err)
 
 		// Verify the file was created and has content
@@ -65,10 +65,10 @@ func TestGetExchangeRatesFutureDate(t *testing.T) {
 func TestForDateAndForTime(t *testing.T) {
 	vcr.Test(t, testMode, bootstrap, func(t *testing.T, client *sbpfx.Client, c vcr.Cassette) {
 		// Test ForDate with string format
-		rateFromString, err1 := client.GetExchangeRate(t.Context(), sbpfx.USD, sbpfx.ForDate("2026-06-23"))
+		rateFromString, err1 := client.GetExchangeRate(t.Context(), sbpfx.USD, sbpfx.ForDate("2025-08-27"))
 
 		// Test ForTime with time.Time
-		specificTime := time.Date(2026, 6, 23, 0, 0, 0, 0, time.UTC)
+		specificTime := time.Date(2025, 8, 27, 0, 0, 0, 0, time.UTC)
 		rateFromTime, err2 := client.GetExchangeRate(t.Context(), sbpfx.USD, sbpfx.ForTime(specificTime))
 
 		// Both should work and return the same data (assuming the date exists)
