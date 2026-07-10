@@ -13,19 +13,36 @@ import (
 )
 
 const (
-	BaseURL      = "https://www.sbp.org.pk/assets/document"
-	HTTPStatusOK = 200
-	YearModulo   = 100 // For getting last 2 digits of year
-	ratePrefix   = "/mark-to-market-revaluation-exchange-rate"
-	pdfSignature = "%PDF" // PDF files begin with this magic header
+	BaseURL        = "https://www.sbp.org.pk/assets/document"
+	HTTPStatusOK   = 200
+	YearModulo     = 100 // For getting last 2 digits of year
+	ratePrefix     = "/mark-to-market-revaluation-exchange-rate"
+	pdfSignature   = "%PDF"            // PDF files begin with this magic header
+	pdfContentType = "application/pdf" // Content-Type advertised for a real sheet
 )
 
-// looksLikePDF reports whether content begins with the PDF file signature.
+// looksLikePDF reports whether a response body is a real rate-sheet PDF.
+//
 // The new /assets/document host serves a 200 with a non-PDF body for missing
 // sheets instead of a 404, so the status code alone is not enough to tell a
 // real rate sheet from a "not found" response.
-func looksLikePDF(content []byte) bool {
-	return bytes.HasPrefix(content, []byte(pdfSignature))
+//
+// The body's %PDF signature is authoritative: the Content-Type header is not
+// always trustworthy (per PR review), so we never accept on the header alone.
+// It is used only to corroborate — a body that passes the signature check but
+// whose Content-Type explicitly advertises a non-PDF type is still rejected,
+// which catches an HTML soft-404 even if its body were to start with %PDF.
+func looksLikePDF(contentType string, content []byte) bool {
+	if !bytes.HasPrefix(content, []byte(pdfSignature)) {
+		return false
+	}
+
+	ct := strings.ToLower(contentType)
+	if ct != "" && !strings.Contains(ct, pdfContentType) {
+		return false
+	}
+
+	return true
 }
 
 // SBP has hosted the daily sheets under three naming schemes as it migrated to
@@ -125,7 +142,7 @@ func (c *Client) GetExchangeRates(ctx context.Context, opts ...Option) (map[Curr
 		return nil, fmt.Errorf("failed to read PDF: %w", err)
 	}
 
-	if !looksLikePDF(content) {
+	if !looksLikePDF(resp.Header.Get("Content-Type"), content) {
 		return nil, fmt.Errorf("PDF not found: no rate sheet available for path: %s", path)
 	}
 
@@ -197,7 +214,7 @@ func (c *Client) DownloadRateSheet(ctx context.Context, path string, opts ...Opt
 		return fmt.Errorf("failed to read PDF: %w", err)
 	}
 
-	if !looksLikePDF(content) {
+	if !looksLikePDF(resp.Header.Get("Content-Type"), content) {
 		return fmt.Errorf("PDF not found: no rate sheet available for path: %s", urlPath)
 	}
 
