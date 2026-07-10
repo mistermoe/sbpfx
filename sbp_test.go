@@ -12,7 +12,7 @@ import (
 	"gopkg.in/dnaeon/go-vcr.v3/recorder"
 )
 
-var testMode vcr.Mode = vcr.Record
+var testMode vcr.Mode = vcr.Replay
 
 func bootstrap(_ *testing.T, mode vcr.Mode, rec *recorder.Recorder) *sbpfx.Client {
 	recorder := rec.GetDefaultClient()
