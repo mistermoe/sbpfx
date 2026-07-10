@@ -84,6 +84,27 @@ func TestForDateAndForTime(t *testing.T) {
 	})
 }
 
+func TestGetUrlDateFormats(t *testing.T) {
+	client := sbpfx.New()
+
+	tests := []struct {
+		date string
+		want string
+	}{
+		// Legacy format (before 2026-06-30): DD-Mon-YY
+		{"2025-08-27", "https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-27-Aug-25.pdf"},
+		{"2026-06-29", "https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-29-Jun-26.pdf"},
+		// Current format (on/after 2026-06-30): DD-month-YYYY
+		{"2026-06-30", "https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-30-june-2026.pdf"},
+		{"2026-07-07", "https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-07-july-2026.pdf"},
+	}
+
+	for _, tt := range tests {
+		got := client.GetUrl(sbpfx.ForDate(tt.date))
+		assert.Equal(t, tt.want, got, "GetUrl for %s", tt.date)
+	}
+}
+
 func TestForDateInvalidFormat(t *testing.T) {
 	client := sbpfx.New()
 

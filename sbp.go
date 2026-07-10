@@ -14,12 +14,31 @@ import (
 const (
 	BaseURL      = "https://www.sbp.org.pk/assets/document"
 	HTTPStatusOK = 200
+	YearModulo   = 100 // For getting last 2 digits of year
+	ratePrefix   = "/mark-to-market-revaluation-exchange-rate"
 )
 
-// ratePath builds the URL path for the exchange rate PDF of the given date,
-// e.g. /mark-to-market-revaluation-exchange-rate-07-july-2026.pdf.
+// formatChangeDate is when SBP switched the rate sheet filename date format from
+// the legacy abbreviated style (e.g. 27-Aug-25) to the current full style
+// (e.g. 07-july-2026). Sheets on or after this date use the current format.
+var formatChangeDate = time.Date(2026, time.June, 30, 0, 0, 0, 0, time.UTC)
+
+// ratePath builds the URL path for the exchange rate PDF of the given date.
+// Legacy sheets (before formatChangeDate) use DD-Mon-YY, e.g.
+// /mark-to-market-revaluation-exchange-rate-27-Aug-25.pdf; current sheets use
+// DD-month-YYYY, e.g. /mark-to-market-revaluation-exchange-rate-07-july-2026.pdf.
 func ratePath(date time.Time) string {
-	return fmt.Sprintf("/mark-to-market-revaluation-exchange-rate-%02d-%s-%d.pdf",
+	if date.Before(formatChangeDate) {
+		return fmt.Sprintf("%s-%02d-%s-%02d.pdf",
+			ratePrefix,
+			date.Day(),
+			date.Format("Jan"),
+			date.Year()%YearModulo, // Last 2 digits of year
+		)
+	}
+
+	return fmt.Sprintf("%s-%02d-%s-%d.pdf",
+		ratePrefix,
 		date.Day(),
 		strings.ToLower(date.Format("January")),
 		date.Year(),

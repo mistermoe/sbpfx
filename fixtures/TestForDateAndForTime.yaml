@@ -15,7 +15,7 @@ interactions:
         body: ""
         form: {}
         headers: {}
-        url: https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-27-august-2025.pdf
+        url: https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-27-Aug-25.pdf
         method: GET
       response:
         proto: HTTP/2.0
@@ -4832,7 +4832,7 @@ interactions:
         body: ""
         form: {}
         headers: {}
-        url: https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-27-august-2025.pdf
+        url: https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-27-Aug-25.pdf
         method: GET
       response:
         proto: HTTP/2.0

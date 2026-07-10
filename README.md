@@ -5,12 +5,12 @@
 The State Bank of Pakistan (SBP) publishes exchange rates for various currencies against the Pakistani Rupee (PKR) on a daily basis. They publish the exchange rates on the internet in PDF format at a deterministic URL for each day. This lib provides an interface to fetch and/or download the exchange rates for any given date.
 
 Example Rate Sheets:
-* [2025-08-27](https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-27-august-2025.pdf)
-* [2025-08-26](https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-26-august-2025.pdf)
-* [2025-08-25](https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-25-august-2025.pdf)
-* [2025-08-24](https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-24-august-2025.pdf)
-* [2025-08-23](https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-23-august-2025.pdf)
-* [2025-08-22](https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-22-august-2025.pdf)
+* [2025-08-27](https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-27-Aug-25.pdf)
+* [2025-08-26](https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-26-Aug-25.pdf)
+* [2025-08-25](https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-25-Aug-25.pdf)
+* [2025-08-24](https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-24-Aug-25.pdf)
+* [2025-08-23](https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-23-Aug-25.pdf)
+* [2025-08-22](https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-22-Aug-25.pdf)
 
 
 > [!NOTE]
