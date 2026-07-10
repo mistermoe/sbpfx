@@ -12,7 +12,7 @@ import (
 	"gopkg.in/dnaeon/go-vcr.v3/recorder"
 )
 
-var testMode vcr.Mode = vcr.Replay
+var testMode vcr.Mode = vcr.Record
 
 func bootstrap(_ *testing.T, mode vcr.Mode, rec *recorder.Recorder) *sbpfx.Client {
 	recorder := rec.GetDefaultClient()
@@ -95,7 +95,7 @@ func TestGetUrlDateFormats(t *testing.T) {
 		{"2025-08-27", "https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-27-Aug-25.pdf"},
 		{"2026-06-29", "https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-29-Jun-26.pdf"},
 		// Current format (on/after 2026-06-30): DD-month-YYYY
-		{"2026-06-30", "https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-30-june-2026.pdf"},
+		{"2026-07-03", "https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-03-july-2026.pdf"},
 		{"2026-07-07", "https://www.sbp.org.pk/assets/document/mark-to-market-revaluation-exchange-rate-07-july-2026.pdf"},
 	}
 

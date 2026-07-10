@@ -1,6 +1,7 @@
 package sbpfx
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"io"
@@ -16,7 +17,16 @@ const (
 	HTTPStatusOK = 200
 	YearModulo   = 100 // For getting last 2 digits of year
 	ratePrefix   = "/mark-to-market-revaluation-exchange-rate"
+	pdfSignature = "%PDF" // PDF files begin with this magic header
 )
+
+// looksLikePDF reports whether content begins with the PDF file signature.
+// The new /assets/document host serves a 200 with a non-PDF body for missing
+// sheets instead of a 404, so the status code alone is not enough to tell a
+// real rate sheet from a "not found" response.
+func looksLikePDF(content []byte) bool {
+	return bytes.HasPrefix(content, []byte(pdfSignature))
+}
 
 // formatChangeDate is when SBP switched the rate sheet filename date format from
 // the legacy abbreviated style (e.g. 27-Aug-25) to the current full style
@@ -90,6 +100,10 @@ func (c *Client) GetExchangeRates(ctx context.Context, opts ...Option) (map[Curr
 		return nil, fmt.Errorf("failed to read PDF: %w", err)
 	}
 
+	if !looksLikePDF(content) {
+		return nil, fmt.Errorf("PDF not found: no rate sheet available for path: %s", path)
+	}
+
 	return parsePDFContent(content, date, fullURL)
 }
 
@@ -144,14 +158,22 @@ func (c *Client) DownloadRateSheet(ctx context.Context, path string, opts ...Opt
 		return fmt.Errorf("PDF not found: status %d for path: %s", resp.StatusCode, urlPath)
 	}
 
+	content, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return fmt.Errorf("failed to read PDF: %w", err)
+	}
+
+	if !looksLikePDF(content) {
+		return fmt.Errorf("PDF not found: no rate sheet available for path: %s", urlPath)
+	}
+
 	file, err := os.Create(path)
 	if err != nil {
 		return fmt.Errorf("failed to create file %s: %w", path, err)
 	}
 	defer file.Close()
 
-	_, err = io.Copy(file, resp.Body)
-	if err != nil {
+	if _, err = file.Write(content); err != nil {
 		return fmt.Errorf("failed to write PDF to file %s: %w", path, err)
 	}
 

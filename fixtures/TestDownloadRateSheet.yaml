@@ -4785,36 +4785,57 @@ interactions:
             Accept-Ranges:
                 - bytes
             Cache-Control:
-                - no-cache
+                - no-store, no-cache, must-revalidate, max-age=0
             Cf-Cache-Status:
                 - DYNAMIC
             Cf-Ray:
-                - 975f42e589d9c0c0-DFW
+                - a18e94dfeee5ff3c-LAX
             Content-Length:
                 - "249610"
+            Content-Security-Policy:
+                - 'default-src ''self'' https://www.sbp.org.pk https://sbp-uat.sbp.org.pk https://sbpv1.symmetrydigital-labs.com; script-src ''self'' ''unsafe-inline'' ''unsafe-eval'' https://www.sbp.org.pk https://sbp-uat.sbp.org.pk https://sbpv1.symmetrydigital-labs.com https://updates.expressionengine.com https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://cdnjs.cloudflare.com https://www.google.com https://www.gstatic.com https://www.recaptcha.net https://connect.facebook.net https://www.facebook.com https://static.cloudflareinsights.com; script-src-elem ''self'' ''unsafe-inline'' ''unsafe-eval'' https://www.sbp.org.pk https://sbp-uat.sbp.org.pk https://sbpv1.symmetrydigital-labs.com https://updates.expressionengine.com https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://cdnjs.cloudflare.com https://www.google.com https://www.gstatic.com https://www.recaptcha.net https://connect.facebook.net https://www.facebook.com https://static.cloudflareinsights.com; style-src ''self'' ''unsafe-inline'' https://www.sbp.org.pk https://sbp-uat.sbp.org.pk https://sbpv1.symmetrydigital-labs.com https://fonts.googleapis.com https://fonts.gstatic.com https://cdnjs.cloudflare.com https://www.googletagmanager.com https://www.google-analytics.com https://analytics.google.com https://www.google.com https://www.gstatic.com https://www.recaptcha.net https://connect.facebook.net https://www.facebook.com; font-src ''self'' data: https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src ''self'' data: blob: https:; connect-src ''self'' https://www.sbp.org.pk https://sbp-uat.sbp.org.pk https://sbpv1.symmetrydigital-labs.com https://updates.expressionengine.com https://www.google-analytics.com https://analytics.google.com https://www.googletagmanager.com https://stats.g.doubleclick.net https://www.google.com https://www.gstatic.com https://www.recaptcha.net https://www.facebook.com https://connect.facebook.net https://static.cloudflareinsights.com https://cloudflareinsights.com; frame-src ''self'' https://www.youtube.com https://www.youtube-nocookie.com https://www.google.com https://www.recaptcha.net https://www.facebook.com https://www.sbp.org.pk https://sbp-uat.sbp.org.pk https://sbpv1.symmetrydigital-labs.com; media-src ''self'' data: blob: https:; object-src ''none''; base-uri ''self''; form-action ''self'' https://www.google.com https://www.recaptcha.net https://www.facebook.com https://www.sbp.org.pk https://sbp-uat.sbp.org.pk https://sbpv1.symmetrydigital-labs.com; frame-ancestors ''self''; manifest-src ''self''; worker-src ''self'' blob:; upgrade-insecure-requests;'
             Content-Type:
                 - application/pdf
+            Cross-Origin-Embedder-Policy:
+                - unsafe-none
+            Cross-Origin-Opener-Policy:
+                - same-origin
+            Cross-Origin-Resource-Policy:
+                - same-origin
             Date:
-                - Wed, 27 Aug 2025 23:13:46 GMT
-            Etag:
-                - '"076aeb93b17dc1:0"'
+                - Fri, 10 Jul 2026 09:36:00 GMT
+            Expires:
+                - "0"
             Last-Modified:
-                - Wed, 27 Aug 2025 10:17:00 GMT
+                - Mon, 04 May 2026 11:06:15 GMT
             Nel:
                 - '{"report_to":"cf-nel","success_fraction":0.0,"max_age":604800}'
+            Permissions-Policy:
+                - accelerometer=(), autoplay=(), camera=(), display-capture=(), encrypted-media=(), fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), midi=(), payment=(), picture-in-picture=(self), publickey-credentials-get=(), usb=(), xr-spatial-tracking=()
+            Pragma:
+                - no-cache
+            Referrer-Policy:
+                - strict-origin-when-cross-origin
             Report-To:
-                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=n2Yhbt4WZeRD58eKi9hTA6%2B1os4s%2BafVeVdcyPvfmS6asJAzLNEJllvHjVjpfPlK%2BOXQUSk80SEKDbrQ5xKM1A9tqkocjSNX4CmJ"}]}'
+                - '{"group":"cf-nel","max_age":604800,"endpoints":[{"url":"https://a.nel.cloudflare.com/report/v4?s=Cb3C4mdIIrMbfW1kw5fYFOcJETWiDHMmha3lpONJcIRnSNW1gmp7leqLZU3ELjrKIY0Y3a9kHwdb52r6NcV%2FmOR5Z3ccaZf8nfs7SR5MES5oGCg0TBfl4AUI%2FUkc3zF8"}]}'
             Server:
                 - cloudflare
             Server-Timing:
                 - cfCacheStatus;desc="DYNAMIC"
-                - cfEdge;dur=6,cfOrigin;dur=280
+                - cfEdge;dur=8,cfOrigin;dur=544
+            Strict-Transport-Security:
+                - max-age=0
             X-Content-Type-Options:
+                - nosniff
                 - nosniff
             X-Frame-Options:
                 - SAMEORIGIN
+                - sameorigin
+            X-Permitted-Cross-Domain-Policies:
+                - none
             X-Xss-Protection:
                 - 1; mode=block
+                - "1"
         status: 200 OK
         code: 200
-        duration: 322.090958ms
+        duration: 562.90225ms
