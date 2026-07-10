@@ -93,17 +93,17 @@ func TestGetUrlDateFormats(t *testing.T) {
 		date string
 		want string
 	}{
-		// Older archive (before bareEraStart, 2026-06-01): prefix + DD-Mon-YY
+		// Older archive (through 2026-05-31): prefix + DD-Mon-YY
 		{"2025-08-27", base + "/mark-to-market-revaluation-exchange-rate-27-Aug-25.pdf"},
 		{"2026-05-31", base + "/mark-to-market-revaluation-exchange-rate-31-May-26.pdf"},
-		// Recent legacy window (bareEraStart..newFormatStart): bare DD-Mon-YY
+		// Recent legacy window (2026-06-01 through 2026-07-02): bare DD-Mon-YY
 		{"2026-06-01", base + "/01-Jun-26.pdf"},
 		{"2026-06-23", base + "/23-Jun-26.pdf"},
 		{"2026-06-29", base + "/29-Jun-26.pdf"},
 		// Transition-window overrides (irregular names)
 		{"2026-06-30", base + "/30-Jun-26_1.pdf"},
 		{"2026-07-02", base + "/mark-to-market-revaluation-exchange-rate-02-Jul-26.pdf"},
-		// Current format (on/after newFormatStart, 2026-07-03): prefix + DD-month-YYYY
+		// Current format (2026-07-03 onward): prefix + DD-month-YYYY
 		{"2026-07-03", base + "/mark-to-market-revaluation-exchange-rate-03-july-2026.pdf"},
 		{"2026-07-07", base + "/mark-to-market-revaluation-exchange-rate-07-july-2026.pdf"},
 	}

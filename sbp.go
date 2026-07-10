@@ -31,12 +31,15 @@ func looksLikePDF(content []byte) bool {
 // SBP has hosted the daily sheets under three naming schemes as it migrated to
 // the /assets/document host. ratePath picks the right one for a date:
 //   - migrationOverrides: transition-window sheets with irregular names
-//   - on/after newFormatStart: current prefix + DD-month-YYYY (e.g. 03-july-2026)
-//   - bareEraStart .. newFormatStart: bare DD-Mon-YY (e.g. 23-Jun-26)
-//   - before bareEraStart: prefix + DD-Mon-YY (e.g. 27-Aug-25)
+//   - after 2026-07-02: current prefix + DD-month-YYYY (e.g. 03-july-2026)
+//   - after 2026-05-31: bare DD-Mon-YY (e.g. 23-Jun-26)
+//   - earlier: prefix + DD-Mon-YY (e.g. 27-Aug-25)
+//
+// The boundaries are the last day of the previous scheme so the checks can use
+// date.After; dates are day-truncated by ForDate/ForTime.
 var (
-	newFormatStart = time.Date(2026, time.July, 3, 0, 0, 0, 0, time.UTC)
-	bareEraStart   = time.Date(2026, time.June, 1, 0, 0, 0, 0, time.UTC)
+	lastLegacyDay   = time.Date(2026, time.July, 2, 0, 0, 0, 0, time.UTC) // current scheme starts the next day
+	lastPrefixedDay = time.Date(2026, time.May, 31, 0, 0, 0, 0, time.UTC) // bare scheme starts the next day
 )
 
 // migrationOverrides holds the transition-window sheets that SBP uploaded with
@@ -60,7 +63,7 @@ func ratePath(date time.Time) string {
 	)
 
 	switch {
-	case !date.Before(newFormatStart):
+	case date.After(lastLegacyDay):
 		// Current scheme: prefix + DD-month-YYYY, e.g. 03-july-2026.
 		return fmt.Sprintf("%s-%02d-%s-%d.pdf",
 			ratePrefix,
@@ -68,7 +71,7 @@ func ratePath(date time.Time) string {
 			strings.ToLower(date.Format("January")),
 			date.Year(),
 		)
-	case !date.Before(bareEraStart):
+	case date.After(lastPrefixedDay):
 		// Recent legacy window: bare name, e.g. /23-Jun-26.pdf.
 		return "/" + legacyDate + ".pdf"
 	default:
