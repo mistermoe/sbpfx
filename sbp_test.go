@@ -62,6 +62,20 @@ func TestGetExchangeRatesFutureDate(t *testing.T) {
 	})
 }
 
+func TestGetExchangeRatesDualFormat(t *testing.T) {
+	vcr.Test(t, testMode, bootstrap, func(t *testing.T, client *sbpfx.Client, c vcr.Cassette) {
+		// From July 2026 SBP posts the daily sheet under either the long
+		// prefixed name or the bare DD-Mon-YY name. In this cassette the long
+		// name (mark-to-market-...-17-july-2026.pdf) soft-404s and the sheet is
+		// served under the bare name (17-Jul-26.pdf). The client should fall
+		// through to the bare candidate and report the URL that served it.
+		rate, err := client.GetExchangeRate(t.Context(), sbpfx.USD, sbpfx.ForDate("2026-07-17"))
+		assert.NoError(t, err)
+		assert.NotZero(t, rate)
+		assert.Equal(t, "https://www.sbp.org.pk/assets/document/17-Jul-26.pdf", rate.URL)
+	})
+}
+
 func TestGetExchangeRatesMalformedSheet(t *testing.T) {
 	vcr.Test(t, testMode, bootstrap, func(t *testing.T, client *sbpfx.Client, c vcr.Cassette) {
 		// During the June 2026 migration SBP posted a few PDFs that exist but
