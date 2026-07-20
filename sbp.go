@@ -89,7 +89,6 @@ func ratePaths(date time.Time) []string {
 		date.Format("Jan"),
 		date.Year()%YearModulo, // Last 2 digits of year
 	)
-	barePath := "/" + legacyDate + ".pdf"
 
 	switch {
 	case date.After(lastLegacyDay):
@@ -102,10 +101,10 @@ func ratePaths(date time.Time) []string {
 			strings.ToLower(date.Format("January")),
 			date.Year(),
 		)
-		return []string{longPath, barePath}
+		return []string{longPath, "/" + legacyDate + ".pdf"}
 	case date.After(lastPrefixedDay):
 		// Recent legacy window: bare name, e.g. /23-Jun-26.pdf.
-		return []string{barePath}
+		return []string{"/" + legacyDate + ".pdf"}
 	default:
 		// Older archive: prefix + DD-Mon-YY, e.g. .../rate-27-Aug-25.pdf.
 		return []string{ratePrefix + "-" + legacyDate + ".pdf"}
@@ -131,20 +130,18 @@ func New(options ...httpr.ClientOption) *Client {
 
 // fetchRateSheet downloads the first candidate URL that resolves to a real
 // rate-sheet PDF for the given date. It returns the PDF bytes and the full URL
-// that served them. When several candidates are tried (the current era posts
-// under two names), the error from the last candidate is returned if none hit.
-func (c *Client) fetchRateSheet(ctx context.Context, date time.Time) (content []byte, fullURL string, err error) {
-	paths := ratePaths(date)
-
+// that served them. When several candidates are tried, the error from the
+// last candidate is returned if none are fetched.
+func (c *Client) fetchRateSheet(ctx context.Context, date time.Time) ([]byte, string, error) {
 	var lastErr error
-	for _, path := range paths {
-		body, fetchErr := c.fetchPDF(ctx, path)
-		if fetchErr != nil {
-			lastErr = fetchErr
+	for _, path := range ratePaths(date) {
+		content, err := c.fetchPDF(ctx, path)
+		if err != nil {
+			lastErr = err
 			continue
 		}
 
-		return body, BaseURL + path, nil
+		return content, BaseURL + path, nil
 	}
 
 	return nil, "", lastErr
