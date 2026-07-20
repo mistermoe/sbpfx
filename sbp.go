@@ -45,12 +45,20 @@ func looksLikePDF(contentType string, content []byte) bool {
 	return true
 }
 
-// SBP has hosted the daily sheets under three naming schemes as it migrated to
-// the /assets/document host. ratePath picks the right one for a date:
+// SBP has hosted the daily sheets under several naming schemes as it migrated
+// to the /assets/document host. ratePaths returns the candidate URL paths for a
+// date, in priority order:
 //   - migrationOverrides: transition-window sheets with irregular names
-//   - after 2026-07-02: current prefix + DD-month-YYYY (e.g. 03-july-2026)
+//   - after 2026-07-02: current prefix + DD-month-YYYY (e.g. 14-july-2026)
+//     AND the bare DD-Mon-YY name (e.g. 17-Jul-26) — see below
 //   - after 2026-05-31: bare DD-Mon-YY (e.g. 23-Jun-26)
 //   - earlier: prefix + DD-Mon-YY (e.g. 27-Aug-25)
+//
+// From July 2026 onward SBP posts the same daily sheet under either the long
+// prefixed name or the bare DD-Mon-YY name with no discernible pattern (e.g.
+// .../mark-to-market-revaluation-exchange-rate-14-july-2026.pdf on one day and
+// .../17-Jul-26.pdf on another), so the current era yields both candidates and
+// the caller tries each until one resolves to a real PDF.
 //
 // The boundaries are the last day of the previous scheme so the checks can use
 // date.After; dates are day-truncated by ForDate/ForTime.
@@ -66,10 +74,13 @@ var migrationOverrides = map[string]string{
 	"2026-07-02": ratePrefix + "-02-Jul-26.pdf", // prefix but legacy date style
 }
 
-// ratePath builds the URL path for the exchange rate PDF of the given date.
-func ratePath(date time.Time) string {
+// ratePaths builds the candidate URL paths for the exchange rate PDF of the
+// given date, in priority order. Most eras resolve to a single deterministic
+// path; the current era (July 2026 onward) returns both the long prefixed name
+// and the bare DD-Mon-YY name because SBP uses them interchangeably.
+func ratePaths(date time.Time) []string {
 	if override, ok := migrationOverrides[date.Format("2006-01-02")]; ok {
-		return override
+		return []string{override}
 	}
 
 	// Legacy dates: DD-Mon-YY, e.g. 27-Aug-25.
@@ -81,19 +92,22 @@ func ratePath(date time.Time) string {
 
 	switch {
 	case date.After(lastLegacyDay):
-		// Current scheme: prefix + DD-month-YYYY, e.g. 03-july-2026.
-		return fmt.Sprintf("%s-%02d-%s-%d.pdf",
+		// Current era: SBP posts the sheet under either the long prefixed name
+		// (prefix + DD-month-YYYY, e.g. 14-july-2026) or the bare DD-Mon-YY
+		// name (e.g. 17-Jul-26), so try both.
+		longPath := fmt.Sprintf("%s-%02d-%s-%d.pdf",
 			ratePrefix,
 			date.Day(),
 			strings.ToLower(date.Format("January")),
 			date.Year(),
 		)
+		return []string{longPath, "/" + legacyDate + ".pdf"}
 	case date.After(lastPrefixedDay):
 		// Recent legacy window: bare name, e.g. /23-Jun-26.pdf.
-		return "/" + legacyDate + ".pdf"
+		return []string{"/" + legacyDate + ".pdf"}
 	default:
 		// Older archive: prefix + DD-Mon-YY, e.g. .../rate-27-Aug-25.pdf.
-		return ratePrefix + "-" + legacyDate + ".pdf"
+		return []string{ratePrefix + "-" + legacyDate + ".pdf"}
 	}
 }
 
@@ -114,19 +128,28 @@ func New(options ...httpr.ClientOption) *Client {
 	}
 }
 
-func (c *Client) GetExchangeRates(ctx context.Context, opts ...Option) (map[Currency]*ExchangeRate, error) {
-	cfg := defaultConfig()
-	for _, opt := range opts {
-		if err := opt(cfg); err != nil {
-			return nil, fmt.Errorf("failed to apply option: %w", err)
+// fetchRateSheet downloads the first candidate URL that resolves to a real
+// rate-sheet PDF for the given date. It returns the PDF bytes and the full URL
+// that served them. When several candidates are tried, the error from the
+// last candidate is returned if none are fetched.
+func (c *Client) fetchRateSheet(ctx context.Context, date time.Time) ([]byte, string, error) {
+	var lastErr error
+	for _, path := range ratePaths(date) {
+		content, err := c.fetchPDF(ctx, path)
+		if err != nil {
+			lastErr = err
+			continue
 		}
+
+		return content, BaseURL + path, nil
 	}
 
-	date := cfg.date
-	path := ratePath(date)
+	return nil, "", lastErr
+}
 
-	fullURL := fmt.Sprintf("%s%s", BaseURL, path)
-
+// fetchPDF issues a single GET for a candidate path and returns its body only
+// if the response is a real rate-sheet PDF.
+func (c *Client) fetchPDF(ctx context.Context, path string) ([]byte, error) {
 	resp, err := c.httpClient.Get(ctx, path)
 	if err != nil {
 		return nil, fmt.Errorf("failed to download PDF: %w", err)
@@ -144,6 +167,24 @@ func (c *Client) GetExchangeRates(ctx context.Context, opts ...Option) (map[Curr
 
 	if !looksLikePDF(resp.Header.Get("Content-Type"), content) {
 		return nil, fmt.Errorf("PDF not found: no rate sheet available for path: %s", path)
+	}
+
+	return content, nil
+}
+
+func (c *Client) GetExchangeRates(ctx context.Context, opts ...Option) (map[Currency]*ExchangeRate, error) {
+	cfg := defaultConfig()
+	for _, opt := range opts {
+		if err := opt(cfg); err != nil {
+			return nil, fmt.Errorf("failed to apply option: %w", err)
+		}
+	}
+
+	date := cfg.date
+
+	content, fullURL, err := c.fetchRateSheet(ctx, date)
+	if err != nil {
+		return nil, err
 	}
 
 	rates, err := parsePDFContent(content, date, fullURL)
@@ -184,7 +225,11 @@ func (c *Client) GetUrl(opts ...Option) string {
 
 	date := cfg.date
 
-	return fmt.Sprintf("%s%s", BaseURL, ratePath(date))
+	// ratePaths always returns at least one candidate; [0] is the primary name.
+	// In the current era SBP may instead post under the bare fallback name, so
+	// callers that need the URL that actually served a sheet should use
+	// GetExchangeRates (which reports the resolved URL) rather than GetUrl.
+	return BaseURL + ratePaths(date)[0]
 }
 
 // DownloadRateSheet downloads the exchange rate PDF to the specified file path.
@@ -196,26 +241,9 @@ func (c *Client) DownloadRateSheet(ctx context.Context, path string, opts ...Opt
 		}
 	}
 
-	date := cfg.date
-	urlPath := ratePath(date)
-
-	resp, err := c.httpClient.Get(ctx, urlPath)
+	content, _, err := c.fetchRateSheet(ctx, cfg.date)
 	if err != nil {
-		return fmt.Errorf("failed to download PDF: %w", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != HTTPStatusOK {
-		return fmt.Errorf("PDF not found: status %d for path: %s", resp.StatusCode, urlPath)
-	}
-
-	content, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return fmt.Errorf("failed to read PDF: %w", err)
-	}
-
-	if !looksLikePDF(resp.Header.Get("Content-Type"), content) {
-		return fmt.Errorf("PDF not found: no rate sheet available for path: %s", urlPath)
+		return err
 	}
 
 	file, err := os.Create(path)

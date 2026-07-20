@@ -169,6 +169,8 @@ func main() {
 
 Returns the URL for the exchange rate sheet for a given date. Optionally, you can pass in a date to get the URL for a specific date. If no date is provided, the current date is used.
 
+> **Note:** From July 2026 onward SBP publishes the same daily sheet under either a long prefixed name (`.../mark-to-market-revaluation-exchange-rate-14-july-2026.pdf`) or a bare `DD-Mon-YY` name (`.../17-Jul-26.pdf`), with no reliable pattern. `GetUrl` returns the primary (long) name; `GetExchangeRates`/`GetExchangeRate`/`DownloadRateSheet` try both and report the URL that actually served the sheet.
+
 ```go
 
 import "github.com/mistermoe/sbpfx"
